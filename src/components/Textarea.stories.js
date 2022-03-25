@@ -13,7 +13,7 @@ export const TextareaNormalState = () => ({
 
 export const TextareaDisabledState = () => ({
   components: { Input },
-  template: '<Input  type="textarea" disabled="true" caption="input caption" />',
+  template: '<Input type="textarea" disabled caption="input caption" />',
 });
 
 export const TextareaErrorState = () => ({

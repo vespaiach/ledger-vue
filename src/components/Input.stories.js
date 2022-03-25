@@ -13,7 +13,7 @@ export const InputNormalState = () => ({
 
 export const InputDisabledState = () => ({
   components: { Input },
-  template: '<Input disabled="true" caption="input caption" />',
+  template: '<Input :disabled="true" caption="input caption" />',
 });
 
 export const InputErrorState = () => ({

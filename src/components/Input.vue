@@ -15,12 +15,16 @@
       type: Boolean,
       default: false,
     },
+    row: {
+      type: Number,
+      default: 3,
+    },
     caption: String,
     type: String,
   });
 
   const slots = useSlots();
-
+  const emit = defineEmits(['change']);
   const leftSpace = ref(!!slots.default?.());
 </script>
 
@@ -31,7 +35,7 @@
       <span class="error_text" v-if="error"> - {{ error }}</span>
     </div>
     <textarea :disabled="disabled" v-if="type === 'textarea'" :row="row" :id="{ id }" />
-    <input :disabled="disabled" v-else :type="type" :id="id" />
+    <input :disabled="disabled" v-else :type="type" :id="id" @change="(event)=>emit('change', event)" />
     <slot></slot>
   </label>
 </template>
@@ -106,7 +110,7 @@
     min-height: 24px;
   }
 
-  .input.left_space input, 
+  .input.left_space input,
   .input.left_space textarea {
     padding-left: 48px;
   }

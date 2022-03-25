@@ -1,8 +1,8 @@
 <script setup>
   import Spinner from './Spinner.vue';
 
-  defineProps({
-    text: String,
+  const props = defineProps({
+    caption: String,
     loading: {
       type: Boolean,
       default: false,
@@ -15,24 +15,22 @@
       type: Boolean,
       default: false,
     },
-    onClick: {
-      type: Function,
-      default: null,
-    },
   });
+  const emit = defineEmits(['click']);
+
+  const handleClick = (evt) => {
+    if (props.loading || props.disabled) return;
+    emit('click', evt);
+  };
 </script>
 
 <template>
-  <button
-    v-on:click="loading || disabled ? null : onClick(event)"
-    class="button"
-    :class="{ box_less: boxLess, disabled }"
-  >
+  <button @click="handleClick" class="button" :class="{ box_less: boxLess, disabled }">
     <div v-if="loading" class="spinner_sheet">
-      <Spinner width="24" height="24" />
+      <Spinner :width="24" :height="24" />
     </div>
-    <span v-if="text" :v-text="text"></span>
     <slot />
+    <span v-text="caption"></span>
   </button>
 </template>
 
@@ -46,6 +44,7 @@
     cursor: pointer;
     overflow: hidden;
     border-radius: 4px;
+    gap: 4px;
   }
 
   .button:not(.box_less) {
@@ -56,8 +55,8 @@
   }
 
   .box_less {
-    height: 24px;
-    width: 24px;
+    min-height: 38px;
+    min-width: 38px;
     background: none;
     border: none;
   }

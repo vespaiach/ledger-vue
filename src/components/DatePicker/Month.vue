@@ -1,28 +1,55 @@
 <script setup>
-  defineProps({
+  import { getMonthDates, MonthNames, DayNames } from './utils';
+
+  const props = defineProps({
     startDate: Date,
-    endDate: Date,
+    year: Number,
+    month: Number,
   });
+
+  const dates = getMonthDates(props.startDate);
 </script>
 
 <template>
-  <div class="container"></div>
+  <div class="month" :id="`m${month}${year}`">
+    <div class="header">{{ `${MonthNames[month]} ${year}` }}</div>
+    <div class="days" v-for="day in DayNames" :key="day">{{ day }}</div>
+    <template v-for="date in dates" :key="`${date.getMonth()}-${date.getFullYear()}`">
+      <button v-if="date.getMonth() === month" class="day clickake">{{ date.getDate() }}</button>
+      <div v-else class="day">{{ date.getDate() }}</div>
+    </template>
+  </div>
 </template>
 
 <style scoped>
-  .container {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-
-    overflow-y: hidden;
-    overflow-x: scroll;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  .month {
+    display: grid;
+    box-sizing: border-box;
+    grid: auto-flow / repeat(7, 1fr);
   }
-  .container::-webkit-scrollbar {
-    /* WebKit */
-    width: 0;
-    height: 0;
+
+  .header {
+    padding: 8px 12px;
+    grid-column: 1 / 8;
+  }
+
+  .days {
+    padding: 16px 12px;
+    font-weight: 700;
+  }
+
+  .day {
+    text-align: left;
+    padding: 12px;
+    cursor: crosshair;
+  }
+
+  .day.clickake {
+    cursor: pointer;
+  }
+
+  .clickake {
+    border: none;
+    background: none;
   }
 </style>

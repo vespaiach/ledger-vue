@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest';
 
-import { getMonthData, getMonthDates } from './utils';
+import { getMonthList, getMonthDates } from './utils';
 
-test('getMonthDates', () => {
+test('getMonthDates, new Date(2022, 1, 27)', () => {
   const dates = getMonthDates(new Date(2022, 1, 27));
 
   expect(dates).toHaveLength(42);
@@ -11,8 +11,8 @@ test('getMonthDates', () => {
   expect(dates[dates.length - 1].getMonth()).toBe(3);
 });
 
-test('getMonthData', () => {
-  const months = getMonthData(new Date(2022, 2, 1), 10);
+test('getMonthList', () => {
+  const months = getMonthList(new Date(2022, 2, 1), 10);
 
   expect(months).toHaveLength(21);
 

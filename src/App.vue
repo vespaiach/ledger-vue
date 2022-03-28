@@ -3,6 +3,7 @@
   import Button from './components/Button.vue';
   import Input from './components/Input.vue';
   import MessagePane from './components/MessagePane.vue';
+  import DatePicker from './components/DatePicker/index.vue';
 
   const messages = ref([
     { id: 'item1', message: 'I can fly', timeout: 3000, type: 'success' },
@@ -21,7 +22,7 @@
 
 <template>
   <Button @click="handleClick">test</Button>
-  <message-pane :messages="messages" @remove="handleRemove" />
+  <date-picker :start="new Date()" />
 </template>
 
 <style>

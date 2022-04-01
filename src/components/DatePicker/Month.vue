@@ -6,13 +6,14 @@
     year: Number,
     month: Number,
     left: Number,
+    index: Number,
   });
 
   const dates = getMonthDates(props.startDate);
 </script>
 
 <template>
-  <div class="month" :id="`m${month}${year}`" :style="{ left: `${left}px` }">
+  <div class="month" :id="`m${month}${year}`" :style="{ left: `${left}px` }" :data-index="index">
     <div class="header">{{ `${MonthNames[month]} ${year}` }}</div>
     <div class="days" v-for="day in DayNames" :key="day">{{ day }}</div>
     <template v-for="date in dates" :key="`${date.getMonth()}-${date.getFullYear()}`">

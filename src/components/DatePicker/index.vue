@@ -1,5 +1,5 @@
 <script setup>
-  import { nextTick, onMounted, onUpdated, ref } from 'vue';
+  import { nextTick, onMounted, onUpdated, reactive, ref, watch } from 'vue';
   import { getFirstDateOfMonth, getMonthData, getMonthList } from './utils';
   import Month from './Month.vue';
 
@@ -7,9 +7,11 @@
     start: Date,
   });
 
-  const padding = 20;
+  const padding = 10;
   const monthBoxWidthRef = ref(385);
   const containerRef = ref(null);
+  const lastScrollLeftRef = ref(null);
+  let observer;
 
   const months = ref(getMonthList(getFirstDateOfMonth(props.start), padding));
   months.value.forEach((m, i) => {
@@ -17,7 +19,6 @@
   });
 
   const listenToScrollEvent = () => {
-    lastScrollLeftRef.value = containerRef.value.scrollLeft;
     containerRef.value.addEventListener('scroll', handleScroll);
   };
 
@@ -83,9 +84,42 @@
     );
   };
 
+  const leftMostIndex = ref(Number.MAX_VALUE);
+
+  const callback = (entries) => {
+    console.log(entries);
+    let left = Number.MAX_VALUE;
+
+    for (let entry of entries) {
+      if (entry.isIntersecting && entry.boundingClientRect.left >= 0 && entry.boundingClientRect.left < left) {
+        leftMostIndex.value = entry.target.dataset['index'];
+        left = entry.boundingClientRect.left;
+        console.log(entry.boundingClientRect);
+      }
+    }
+  };
+
+  watch(leftMostIndex, (v) => {
+    console.log(v);
+  });
+
   onMounted(() => {
     document.getElementById(`m${props.start.getMonth()}${props.start.getFullYear()}`).scrollIntoView(true);
-    nextTick(listenToScrollEvent);
+    lastScrollLeftRef.value = containerRef.value.scrollLeft;
+
+    observer = new IntersectionObserver(callback, {
+      root: containerRef.value,
+      rootMargin: '0px',
+      threshold: 1,
+    });
+
+    nextTick(() => {
+      months.value.forEach((m) => {
+        observer.observe(document.getElementById(`m${m.month}${m.year}`));
+      });
+    });
+
+    // nextTick(listenToScrollEvent);
   });
 
   onUpdated(() => {
@@ -96,7 +130,7 @@
 <template>
   <div class="container" ref="containerRef">
     <div class="sheet">
-      <month v-for="m in months" :key="`m${m.month}${m.year}`" v-bind="m" />
+      <month v-for="(m, i) in months" :key="`m${m.month}${m.year}`" v-bind="m" :index="i" />
     </div>
   </div>
 </template>
